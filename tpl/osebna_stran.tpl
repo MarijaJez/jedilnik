@@ -8,6 +8,7 @@
 Živjo, {{ime}}
 Moja gospodinjstva:
 
+<a href='/dodaj_gospodinjstvo'> Dodaj gospodinjstvo </a>
 <a href='/odjava'> Odjava </a>
 </body>
 
