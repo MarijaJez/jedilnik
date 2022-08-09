@@ -15,6 +15,16 @@ def preveri_uporabnika():
         bottle.redirect("/")
     return ime
 
+def preveri_gospodinjstva():
+    uporabnisko_ime = preveri_uporabnika()
+    moja_gospodinjstva = []
+    with open("gospodinjstva.json", encoding='utf8') as d:
+        gospodinjstva = json.loads(d.read())
+    for gospodinjstvo in gospodinjstva:
+        if uporabnisko_ime in gospodinjstvo["člani"]:
+            moja_gospodinjstva.append(gospodinjstvo["ime_gospodinjstva"])
+    return moja_gospodinjstva
+
 @bottle.get("/")
 def indeks():
     return bottle.template("tpl/zacetna_stran.tpl")
@@ -22,7 +32,8 @@ def indeks():
 @bottle.get("/osebna_stran")
 def funkcija():
     uporabnisko_ime = preveri_uporabnika()
-    return bottle.template("tpl/osebna_stran.tpl", {'ime': uporabnisko_ime})
+    moja_gospodinjstva = preveri_gospodinjstva()
+    return bottle.template("tpl/osebna_stran.tpl", {'ime': uporabnisko_ime, 'gospodinjstva': moja_gospodinjstva})
 
 @bottle.get("/prijava")
 def indeks():
@@ -30,9 +41,9 @@ def indeks():
 
 @bottle.post("/prijava")
 def prijava():
-    ime = request.forms.get('ime')
-    geslo = hashSHA256(request.forms.get('geslo'))
-    with open("uporabniki.json") as d:
+    ime = request.forms.ime
+    geslo = hashSHA256(request.forms.geslo)
+    with open("uporabniki.json", encoding='utf8') as d:
         uporabniki = json.loads(d.read())
     for uporabnik in uporabniki:
         if ime == uporabnik["uporabnisko_ime"] and geslo == uporabnik["geslo"]:
@@ -46,18 +57,18 @@ def indeks():
 
 @bottle.post("/registracija")
 def registracija():
-    ime = request.forms.get('ime')
-    geslo = hashSHA256(request.forms.get('geslo'))
+    ime = request.forms.ime
+    geslo = hashSHA256(request.forms.geslo)
     nov_uporabnik = {"uporabnisko_ime": ime,
         "geslo": geslo}
-    with open("uporabniki.json") as d:
+    with open("uporabniki.json", encoding='utf8') as d:
         uporabniki = json.loads(d.read())
     for uporabnik in uporabniki:
         if ime == uporabnik["uporabnisko_ime"]:
             return bottle.template("tpl/napaka.tpl")
     uporabniki.append(nov_uporabnik)
-    with open('uporabniki.json', 'w') as d:
-        json.dump(uporabniki, d)
+    with open('uporabniki.json', 'w', encoding='utf8') as d:
+        json.dump(uporabniki, d, ensure_ascii=False)
     bottle.response.set_cookie('uporabnisko_ime', ime, path='/', secret=SKRIVNOST)
     return bottle.redirect("/osebna_stran")
 
@@ -73,22 +84,24 @@ def indeks():
 @bottle.post("/dodaj_gospodinjstvo")
 def dodaj_gospodinjstvo():
     uporabnisko_ime = preveri_uporabnika()
-    ime = request.forms.get('ime_gospodinjstva')
-    geslo = hashSHA256(request.forms.get('geslo'))
+    ime = request.forms.ime_gospodinjstva
+    geslo = hashSHA256(request.forms.geslo)
     novo_gospodinjstvo = {
         "ime_gospodinjstva": ime, 
         "geslo": geslo, 
-        "člani": [uporabnisko_ime]
+        "člani": [uporabnisko_ime],
+        "jedi": []
     }
-    with open("gospodinjstva.json") as d:
+    with open("gospodinjstva.json", encoding='utf8') as d:
         gospodinjstva = json.loads(d.read())
     for gospodinjstvo in gospodinjstva:
         if ime == gospodinjstvo["ime_gospodinjstva"]:
             return bottle.redirect(f"/ze_obstaja/{ime}")
     gospodinjstva.append(novo_gospodinjstvo)
-    with open('gospodinjstva.json', 'w') as d:
-        json.dump(gospodinjstva, d)
-    return bottle.template("tpl/osebna_stran.tpl", {'ime': uporabnisko_ime})
+    with open('gospodinjstva.json', 'w', encoding='utf8') as d:
+        json.dump(gospodinjstva, d, ensure_ascii=False)
+    moja_gospodinjstva = preveri_gospodinjstva()
+    return bottle.template("tpl/osebna_stran.tpl", {'ime': uporabnisko_ime, 'gospodinjstva': moja_gospodinjstva})
 
 @bottle.get("/ze_obstaja/<ime_gospodinjstva>")
 def indeks(ime_gospodinjstva):
@@ -97,14 +110,18 @@ def indeks(ime_gospodinjstva):
 @bottle.get("/pridruzi_se_n/<ime_gospodinjstva>")
 def pridruzi_se_n(ime_gospodinjstva):
     uporabnisko_ime = preveri_uporabnika()
-    with open("gospodinjstva.json") as d:
+    with open("gospodinjstva.json", encoding='utf8') as d:
         gospodinjstva = json.loads(d.read())
     for gospodinjstvo in gospodinjstva:
         if gospodinjstvo["ime_gospodinjstva"] == ime_gospodinjstva:
-            gospodinjstvo["člani"].append(uporabnisko_ime)
-    with open('gospodinjstva.json', 'w') as d:
-        json.dump(gospodinjstva, d)   
-    return bottle.template("tpl/osebna_stran.tpl", {'ime': uporabnisko_ime})
+            if uporabnisko_ime not in gospodinjstvo["člani"]:
+                gospodinjstvo["člani"].append(uporabnisko_ime)
+            else:
+                return bottle.template("tpl/napaka.tpl")
+    with open('gospodinjstva.json', 'w', encoding='utf8') as d:
+        json.dump(gospodinjstva, d, ensure_ascii=False)   
+    moja_gospodinjstva = preveri_gospodinjstva()
+    return bottle.template("tpl/osebna_stran.tpl", {'ime': uporabnisko_ime, 'gospodinjstva': moja_gospodinjstva})
 
 @bottle.get("/pridruzi_se")
 def indeks():
@@ -112,10 +129,10 @@ def indeks():
 
 @bottle.post("/pridruzi_se")
 def pridruzi_se():
-    uporabnisko_ime = preveri_uporabnika()
-    ime = request.forms.get('ime_gospodinjstva')
-    geslo = hashSHA256(request.forms.get('geslo'))
-    with open("gospodinjstva.json") as d:
+    uporabnisko_ime = preveri_uporabnika() 
+    ime = request.forms.ime_gospodinjstva
+    geslo = hashSHA256(request.forms.geslo)
+    with open("gospodinjstva.json", encoding='utf8') as d:
         gospodinjstva = json.loads(d.read())
     for gospodinjstvo in gospodinjstva:
         if gospodinjstvo["ime_gospodinjstva"] == ime and gospodinjstvo["geslo"] == geslo:
@@ -123,8 +140,35 @@ def pridruzi_se():
                 return bottle.template("tpl/napaka.tpl")
             else:
                 gospodinjstvo["člani"].append(uporabnisko_ime)
-    with open('gospodinjstva.json', 'w') as d:
-        json.dump(gospodinjstva, d)
+    with open('gospodinjstva.json', 'w', encoding='utf8') as d:
+        json.dump(gospodinjstva, d, ensure_ascii=False)
     return bottle.redirect("/osebna_stran")
+
+@bottle.get("/stran_gospodinjstva/<gospodinjstvo>")
+def indeks(gospodinjstvo): 
+    with open("gospodinjstva.json", encoding='utf8') as d:
+        gospodinjstva = json.loads(d.read()) 
+    for g in gospodinjstva:
+        if gospodinjstvo == g["ime_gospodinjstva"]: 
+            člani, jedi = g["člani"], g["jedi"]
+    return bottle.template("tpl/stran_gospodinjstva.tpl", {"ime_gospodinjstva": gospodinjstvo, "člani": člani, "jedi": jedi})
+
+@bottle.get("/dodaj_jed/<gospodinjstvo>")
+def indeks(gospodinjstvo):
+    return bottle.template("tpl/dodaj_jed.tpl", {"ime_gospodinjstva": gospodinjstvo})
+
+@bottle.post("/dodaj_jed/<gospodinjstvo>")
+def dodaj_jed(gospodinjstvo):
+    jed = request.forms.ime_jedi
+    with open("gospodinjstva.json", encoding='utf8') as d:
+        gospodinjstva = json.loads(d.read()) 
+    for g in gospodinjstva:
+        if gospodinjstvo == g["ime_gospodinjstva"]:
+            jedi = g["jedi"]
+    jedi.append(jed)
+    print(jed)
+    with open('gospodinjstva.json', 'w', encoding='utf8') as d:
+        json.dump(gospodinjstva, d, ensure_ascii=False)
+    return bottle.redirect(f"/stran_gospodinjstva/{gospodinjstvo}")
 
 run(host='localhost', port=8080, reloader=True)
