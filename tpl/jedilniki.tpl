@@ -6,7 +6,7 @@
 <body>
 <h1>{{ime_gospodinjstva}}</h1>
 
-%for jedilnik in jedilniki:
+%for indeks, jedilnik in enumerate(jedilniki):
 <table border="1">
     %imena_dnevov = ["ponedeljek", "torek", "sreda", "četrtek", "petek", "sobota", "nedelja"]
     %for dan, jed in zip(imena_dnevov, jedilnik):
@@ -15,6 +15,7 @@
             <td>{{jed}}</td>
         </tr>
     %end
+<a href='/izbriši_jedilnik/{{ime_gospodinjstva}}/{{indeks}}'> Izbriši ta jedilnik. </a>
 %end
 </table>
 

@@ -219,4 +219,39 @@ def indeks(ime_gospodinjstva):
         if ime_gospodinjstva == g["ime_gospodinjstva"]: 
             jedilniki = g["jedilniki"]
     return bottle.template("tpl/jedilniki.tpl", {"ime_gospodinjstva": ime_gospodinjstva, "jedilniki": jedilniki})
+
+@bottle.get("/zapusti_gospodinjstvo/<ime_gospodinjstva>")
+def zapusti_gospodinjstvo(ime_gospodinjstva):
+    uporabnisko_ime = preveri_uporabnika()
+    with open("gospodinjstva.json", encoding='utf8') as d:
+        gospodinjstva = json.loads(d.read()) 
+    for g in gospodinjstva:
+        if ime_gospodinjstva == g["ime_gospodinjstva"]: 
+            g["clani"].remove(uporabnisko_ime)
+    with open("gospodinjstva.json", "w", encoding='utf8') as d:
+        json.dump(gospodinjstva, d, ensure_ascii=False)
+    return bottle.redirect("/osebna_stran")
+
+@bottle.get("/izbriši_jed/<ime_gospodinjstva>/<ime_jedi>")
+def izbriši_jed(ime_gospodinjstva, ime_jedi):
+    with open("gospodinjstva.json", encoding='utf8') as d:
+        gospodinjstva = json.loads(d.read()) 
+    for g in gospodinjstva:
+        if ime_gospodinjstva == g["ime_gospodinjstva"]: 
+            g["jedi"].remove(ime_jedi)
+    with open("gospodinjstva.json", "w", encoding='utf8') as d:
+        json.dump(gospodinjstva, d, ensure_ascii=False)
+    return bottle.redirect(f"/stran_gospodinjstva/{ime_gospodinjstva}")
+
+@bottle.get("/izbriši_jedilnik/<ime_gospodinjstva>/<indeks>")
+def izbriši_jedilnik(ime_gospodinjstva, indeks):
+    with open("gospodinjstva.json", encoding='utf8') as d:
+        gospodinjstva = json.loads(d.read()) 
+    for g in gospodinjstva:
+        if ime_gospodinjstva == g["ime_gospodinjstva"]: 
+            g["jedilniki"].pop(int(indeks))
+    with open("gospodinjstva.json", "w", encoding='utf8') as d:
+        json.dump(gospodinjstva, d, ensure_ascii=False)
+    return bottle.redirect(f"/jedilniki/{ime_gospodinjstva}")
+
 run(host='localhost', port=8080, reloader=True)

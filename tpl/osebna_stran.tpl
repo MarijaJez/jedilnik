@@ -11,6 +11,7 @@ Moja gospodinjstva:
 %for gospodinjstvo in gospodinjstva:
   <li>
   <a href='/stran_gospodinjstva/{{gospodinjstvo}}'> {{gospodinjstvo}} </a>
+  <a href='/zapusti_gospodinjstvo/{{gospodinjstvo}}'> Zapusti gospodinjstvo </a>
   </li>
 </ul>
 %end
