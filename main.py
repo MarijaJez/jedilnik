@@ -1,19 +1,25 @@
 SKRIVNOST = "r!atk!XJH1UXAZ0$U#*BN8bYb34MMC&RCy$3Gw&qgv9$44zYS7"
 
+import imp
 import bottle
 import hashlib
 from bottle import route, run, template, request
 import json
 import random 
 
+import uporabniki
+
+uporabniki.preberi()
+
 def hashSHA256(s):
     h = hashlib.sha256(s.encode('utf8'))
     return h.hexdigest()
 
-def preveri_uporabnika():
+def preveri_uporabnika(redirect=True):
     ime = bottle.request.get_cookie('uporabnisko_ime', secret=SKRIVNOST)
-    if ime == None:
+    if ime == None and redirect:
         bottle.redirect("/")
+        
     return ime
 
 def preveri_gospodinjstva():
@@ -21,9 +27,11 @@ def preveri_gospodinjstva():
     moja_gospodinjstva = []
     with open("gospodinjstva.json", encoding='utf8') as d:
         gospodinjstva = json.loads(d.read())
+        
     for gospodinjstvo in gospodinjstva:
         if uporabnisko_ime in gospodinjstvo["clani"]:
             moja_gospodinjstva.append(gospodinjstvo["ime_gospodinjstva"])
+            
     return moja_gospodinjstva
 
 @bottle.get("/")
@@ -38,38 +46,39 @@ def funkcija():
 
 @bottle.get("/prijava")
 def indeks():
+    if preveri_uporabnika(redirect=False) is not None:
+        return bottle.redirect("/osebna_stran")
+    
     return bottle.template("tpl/prijava.tpl")
 
 @bottle.post("/prijava")
 def prijava():
     ime = request.forms.ime
-    geslo = hashSHA256(request.forms.geslo)
-    with open("uporabniki.json", encoding='utf8') as d:
-        uporabniki = json.loads(d.read())
-    for uporabnik in uporabniki:
-        if ime == uporabnik["uporabnisko_ime"] and geslo == uporabnik["geslo"]:
-            bottle.response.set_cookie('uporabnisko_ime', ime, path='/', secret=SKRIVNOST)
-            return bottle.redirect("/osebna_stran")
-    return bottle.template("tpl/napaka.tpl")
+    geslo = request.forms.geslo
+    uporabnik = uporabniki.poisci(ime, geslo)
+    if uporabnik is None:
+        return bottle.template("tpl/napaka.tpl", naslov="Napaka pri prijavi", opis="Uporabniško ime ali geslo ni ustrezno!", gumb="Nazaj na prijavo", povezava="/prijava")
+    else:
+        bottle.response.set_cookie('uporabnisko_ime', ime, path="/", secret=SKRIVNOST)
+        return bottle.redirect("/osebna_stran") 
 
 @bottle.get("/registracija")
 def indeks():
+    if preveri_uporabnika(redirect=False) is not None:
+        return bottle.redirect("/osebna_stran")
+    
     return bottle.template("tpl/registracija.tpl")
 
 @bottle.post("/registracija")
 def registracija():
     ime = request.forms.ime
-    geslo = hashSHA256(request.forms.geslo)
-    nov_uporabnik = {"uporabnisko_ime": ime,
-        "geslo": geslo}
-    with open("uporabniki.json", encoding='utf8') as d:
-        uporabniki = json.loads(d.read())
-    for uporabnik in uporabniki:
-        if ime == uporabnik["uporabnisko_ime"]:
-            return bottle.template("tpl/napaka.tpl")
-    uporabniki.append(nov_uporabnik)
-    with open('uporabniki.json', 'w', encoding='utf8') as d:
-        json.dump(uporabniki, d, ensure_ascii=False)
+    geslo = request.forms.geslo
+
+    try:
+        uporabniki.doddaj(ime, geslo)
+    except:
+        bottle.template("tpl/napaka.tpl", naslov="Napaka pri registraciji", opis=f"Uporabniško ime {ime} že obstaja! Izberite si novo ime in se poskusite ponovno registrirati.", gumb="Nazaj na registracijo", povezava="/registracija")
+
     bottle.response.set_cookie('uporabnisko_ime', ime, path='/', secret=SKRIVNOST)
     return bottle.redirect("/osebna_stran")
 
@@ -95,14 +104,19 @@ def dodaj_gospodinjstvo():
         "jedi": jedi,
         "jedilniki": []
     }
+    
     with open("gospodinjstva.json", encoding='utf8') as d:
         gospodinjstva = json.loads(d.read())
+        
     for gospodinjstvo in gospodinjstva:
         if ime == gospodinjstvo["ime_gospodinjstva"]:
             return bottle.redirect(f"/ze_obstaja/{ime}")
+        
     gospodinjstva.append(novo_gospodinjstvo)
+    
     with open('gospodinjstva.json', 'w', encoding='utf8') as d:
         json.dump(gospodinjstva, d, ensure_ascii=False)
+        
     moja_gospodinjstva = preveri_gospodinjstva()
     return bottle.template("tpl/osebna_stran.tpl", {'ime': uporabnisko_ime, 'gospodinjstva': moja_gospodinjstva})
 
@@ -115,14 +129,17 @@ def pridruzi_se_n(ime_gospodinjstva):
     uporabnisko_ime = preveri_uporabnika()
     with open("gospodinjstva.json", encoding='utf8') as d:
         gospodinjstva = json.loads(d.read())
+        
     for gospodinjstvo in gospodinjstva:
         if gospodinjstvo["ime_gospodinjstva"] == ime_gospodinjstva:
             if uporabnisko_ime not in gospodinjstvo["clani"]:
                 gospodinjstvo["clani"].append(uporabnisko_ime)
             else:
-                return bottle.template("tpl/napaka.tpl")
+                return bottle.template("tpl/napaka.tpl", naslov="Napaka pri pridruzitvi gospodinjstvu", opis="Ste že član tega gospodinjstva! Ne morete se prodružiti ponovno.", gumb="Nazaj na osebno stran.", povezava="/osebna_stran")
+            
     with open('gospodinjstva.json', 'w', encoding='utf8') as d:
         json.dump(gospodinjstva, d, ensure_ascii=False)   
+        
     moja_gospodinjstva = preveri_gospodinjstva()
     return bottle.template("tpl/osebna_stran.tpl", {'ime': uporabnisko_ime, 'gospodinjstva': moja_gospodinjstva})
 
@@ -137,23 +154,30 @@ def pridruzi_se():
     geslo = hashSHA256(request.forms.geslo)
     with open("gospodinjstva.json", encoding='utf8') as d:
         gospodinjstva = json.loads(d.read())
+        
     for gospodinjstvo in gospodinjstva:
         if gospodinjstvo["ime_gospodinjstva"] == ime and gospodinjstvo["geslo"] == geslo:
             if uporabnisko_ime in gospodinjstvo["clani"]:
-                return bottle.template("tpl/napaka.tpl")
+                return bottle.template("tpl/napaka.tpl", naslov="Napaka pri pridruzitvi gospodinjstvu", opis="Ste že član tega gospodinjstva! Ne morete se prodružiti ponovno.", gumb="Nazaj na osebno stran.", povezava="/osebna_stran")
             else:
                 gospodinjstvo["clani"].append(uporabnisko_ime)
+        else:
+            return bottle.template("tpl/napaka.tpl", naslov="Napaka pri pridruzitvi gospodinjstvu", opis="Ime gospodinjstva ali geslo ne ustreza. Preverite podatke in poskusite še enkrat.", gumb="Poskusi ponovno.", povezava="/pridruzi_se")
+        
     with open('gospodinjstva.json', 'w', encoding='utf8') as d:
         json.dump(gospodinjstva, d, ensure_ascii=False)
+        
     return bottle.redirect("/osebna_stran")
 
 @bottle.get("/stran_gospodinjstva/<gospodinjstvo>")
 def indeks(gospodinjstvo): 
     with open("gospodinjstva.json", encoding='utf8') as d:
         gospodinjstva = json.loads(d.read()) 
+        
     for g in gospodinjstva:
         if gospodinjstvo == g["ime_gospodinjstva"]: 
             clani, jedi = g["clani"], g["jedi"]
+            
     return bottle.template("tpl/stran_gospodinjstva.tpl", {"ime_gospodinjstva": gospodinjstvo, "clani": clani, "jedi": jedi})
 
 @bottle.get("/dodaj_jed/<gospodinjstvo>")
@@ -165,13 +189,17 @@ def dodaj_jed(gospodinjstvo):
     jed = request.forms.ime_jedi
     with open("gospodinjstva.json", encoding='utf8') as d:
         gospodinjstva = json.loads(d.read()) 
+        
     for g in gospodinjstva:
         if gospodinjstvo == g["ime_gospodinjstva"]:
             jedi = g["jedi"]
-    jedi.append(jed)
-    print(jed)
+            
+    if jed not in jedi:
+        jedi.append(jed)
+        
     with open('gospodinjstva.json', 'w', encoding='utf8') as d:
         json.dump(gospodinjstva, d, ensure_ascii=False)
+        
     return bottle.redirect(f"/stran_gospodinjstva/{gospodinjstvo}")
 
 @bottle.get("/nov_jedilnik/<ime_gospodinjstva>")
@@ -190,13 +218,16 @@ def zgeneriraj_jedilnik(ime_gospodinjstva):
     teden = [ponedeljek, torek, sreda, četrtek, petek, sobota, nedelja]
     with open("gospodinjstva.json",  encoding='utf8') as d:
         gospodinjstva = json.loads(d.read())
+        
     prazni = 0
     for gospodinjstvo in gospodinjstva:
         if gospodinjstvo["ime_gospodinjstva"] == ime_gospodinjstva:
             jedi = gospodinjstvo["jedi"]
+            
     for dan in teden:
         if dan == "":
             prazni += 1
+            
     dodaj = random.sample(jedi, prazni)
     for i, dan in enumerate(teden):
         if dan == "":
@@ -204,20 +235,25 @@ def zgeneriraj_jedilnik(ime_gospodinjstva):
             prazni -= 1
         elif dan not in jedi:
             jedi.append(dan)
+            
     for gospodinjstvo in gospodinjstva:
         if gospodinjstvo["ime_gospodinjstva"] == ime_gospodinjstva:
             gospodinjstvo["jedilniki"].append(teden)
+            
     with open("gospodinjstva.json", "w", encoding='utf8') as d:
         json.dump(gospodinjstva, d, ensure_ascii=False)
+        
     return bottle.redirect(f"/stran_gospodinjstva/{ime_gospodinjstva}")
 
 @bottle.get("/jedilniki/<ime_gospodinjstva>")
 def indeks(ime_gospodinjstva):
     with open("gospodinjstva.json", encoding='utf8') as d:
         gospodinjstva = json.loads(d.read()) 
+        
     for g in gospodinjstva:
         if ime_gospodinjstva == g["ime_gospodinjstva"]: 
             jedilniki = g["jedilniki"]
+            
     return bottle.template("tpl/jedilniki.tpl", {"ime_gospodinjstva": ime_gospodinjstva, "jedilniki": jedilniki})
 
 @bottle.get("/zapusti_gospodinjstvo/<ime_gospodinjstva>")
@@ -225,33 +261,42 @@ def zapusti_gospodinjstvo(ime_gospodinjstva):
     uporabnisko_ime = preveri_uporabnika()
     with open("gospodinjstva.json", encoding='utf8') as d:
         gospodinjstva = json.loads(d.read()) 
+        
     for g in gospodinjstva:
         if ime_gospodinjstva == g["ime_gospodinjstva"]: 
             g["clani"].remove(uporabnisko_ime)
+            
     with open("gospodinjstva.json", "w", encoding='utf8') as d:
         json.dump(gospodinjstva, d, ensure_ascii=False)
+        
     return bottle.redirect("/osebna_stran")
 
 @bottle.get("/izbriši_jed/<ime_gospodinjstva>/<ime_jedi>")
 def izbriši_jed(ime_gospodinjstva, ime_jedi):
     with open("gospodinjstva.json", encoding='utf8') as d:
         gospodinjstva = json.loads(d.read()) 
+        
     for g in gospodinjstva:
         if ime_gospodinjstva == g["ime_gospodinjstva"]: 
             g["jedi"].remove(ime_jedi)
+            
     with open("gospodinjstva.json", "w", encoding='utf8') as d:
         json.dump(gospodinjstva, d, ensure_ascii=False)
+        
     return bottle.redirect(f"/stran_gospodinjstva/{ime_gospodinjstva}")
 
 @bottle.get("/izbriši_jedilnik/<ime_gospodinjstva>/<indeks>")
 def izbriši_jedilnik(ime_gospodinjstva, indeks):
-    with open("gospodinjstva.json", encoding='utf8') as d:
+    with open("gospodinjstva.json", encoding='utf8') as d: 
         gospodinjstva = json.loads(d.read()) 
+        
     for g in gospodinjstva:
         if ime_gospodinjstva == g["ime_gospodinjstva"]: 
             g["jedilniki"].pop(int(indeks))
+            
     with open("gospodinjstva.json", "w", encoding='utf8') as d:
         json.dump(gospodinjstva, d, ensure_ascii=False)
+        
     return bottle.redirect(f"/jedilniki/{ime_gospodinjstva}")
 
 run(host='localhost', port=8080, reloader=True)
