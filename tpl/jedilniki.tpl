@@ -8,8 +8,10 @@
 
 %for jedilnik in jedilniki:
 <table border="1">
-    %for jed in jedilnik:
+    %imena_dnevov = ["ponedeljek", "torek", "sreda", "četrtek", "petek", "sobota", "nedelja"]
+    %for dan, jed in zip(imena_dnevov, jedilnik):
         <tr>
+            <td>{{dan}}</td>
             <td>{{jed}}</td>
         </tr>
     %end
