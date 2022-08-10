@@ -8,9 +8,9 @@
 
 Člani gospodinjstva:
 <ul>
-%for član in člani:
+%for clan in clani:
     <li>
-    {{član}}
+    {{clan}}
     </li>
 </ul>
 %end
@@ -24,8 +24,10 @@ Vaše jedi:
 </ul>
 %end
 
-<a href='/zgeneriraj_jedilnik'> Ustvarite nov jedilnik. </a>
 <a href='/dodaj_jed/{{ime_gospodinjstva}}'> Dodajte novo jed. </a>
+<a href='/nov_jedilnik/{{ime_gospodinjstva}}'> Ustvarite nov jedilnik. </a>
+<a href='/jedilniki/{{ime_gospodinjstva}}'> Vaši jedilniki </a>
+
 <a href='/osebna_stran'> Nazaj na osebno stran. </a>
 </body>
 
