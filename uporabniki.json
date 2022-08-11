@@ -1,10 +1,10 @@
 [
     {
-        "ime": "Nejc",
-        "geslo": "d2e0c024c700a53708cd17f69d5da85cb68493b08c5ff1bd9b285c3d488ca18e"
-    },
-    {
         "ime": "marija",
         "geslo": "015ef7cb46d3c512fd27798011b106ec8a3574fd95877a65025cbe836eed75d5"
+    },
+    {
+        "ime": "test",
+        "geslo": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
     }
 ]

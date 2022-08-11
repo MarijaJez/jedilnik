@@ -63,14 +63,33 @@ def indeks():
 def registracija():
     ime = request.forms.ime
     geslo = request.forms.geslo
+    potrditev = request.forms.potrditev
 
     try:
-        uporabniki.dodaj(ime, geslo)
-    except:
-        return bottle.template("tpl/napaka.tpl", naslov="Napaka pri registraciji", opis=f"Uporabniško ime '{ime}' že obstaja! Izberite si novo ime in se poskusite ponovno registrirati.", gumb="Nazaj na registracijo", povezava="/registracija")
+        uporabniki.dodaj(ime, geslo, potrditev)
+    except Exception as e:
+        return bottle.template("tpl/napaka.tpl", naslov="Napaka pri registraciji", opis=str(e), gumb="Poskusi ponovno", povezava="/registracija")
 
     bottle.response.set_cookie('uporabnisko_ime', ime, path='/', secret=SKRIVNOST)
     return bottle.redirect("/osebna_stran")
+
+@bottle.get("/zamenjaj_geslo")
+def indeks():
+    return bottle.template("tpl/zamenjaj_geslo.tpl")
+    
+@bottle.post("/zamenjaj_geslo")
+def zamenjaj_geslo():
+    uporabnisko_ime = preveri_uporabnika()
+    geslo = hashSHA256(request.forms.geslo)
+    novo_geslo = request.forms.novo_geslo
+    potrditev = request.forms.potrditev
+    
+    try:
+        uporabniki.zamenjaj_geslo(uporabnisko_ime, geslo, novo_geslo, potrditev)
+    except Exception as e:
+        return bottle.template("tpl/napaka.tpl", naslov="Napaka pri menjavi gesla", opis=str(e), gumb="Poskusi ponovno", povezava="/zamenjaj_geslo")
+    
+    return bottle.redirect("f/osebna_stran")
 
 @bottle.get("/odjava")
 def odjava():

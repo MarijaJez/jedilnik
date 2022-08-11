@@ -19,6 +19,7 @@ Moja gospodinjstva:
 
 <a href='/dodaj_gospodinjstvo'> Dodaj gospodinjstvo </a>
 <a href='/pridruzi_se'> Pridruži se novemu gospodinjstvu </a>
+<a href='/zamenjaj_geslo'> Zamenjaj_geslo </a>
 <a href='/odjava'> Odjava </a>
 </body>
 

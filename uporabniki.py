@@ -42,15 +42,26 @@ def poisci_z_imenom(uporabnisko_ime):
 
     return None
 
-def dodaj( uporabnisko_ime, geslo):
-    if poisci_z_imenom(uporabnisko_ime) is not None:
-        raise Exception("To uporabniško ime je že zasedeno")
+def dodaj( uporabnisko_ime, geslo, potrditev):
+    if geslo == potrditev:
+        if poisci_z_imenom(uporabnisko_ime) is not None:
+            raise Exception(f"Uporabniško ime '{uporabnisko_ime}' že obstaja! Izberite si novo ime in se poskusite ponovno registrirati.")
+        else:
+            uporabniki.append(Uporabnik(uporabnisko_ime,  hashSHA256(geslo)))
     else:
-        uporabniki.append(Uporabnik(uporabnisko_ime,  hashSHA256(geslo)))
+        raise Exception("Gesli se ne ujemata")
     
     shrani()
 
-def spremeni_geslo( uporabnisko_ime, novo_geslo):
+def zamenjaj_geslo(uporabnisko_ime, geslo, novo_geslo, potrditev):
     uporabnik = poisci_z_imenom(uporabnisko_ime)
-    uporabnik.geslo = hashSHA256(novo_geslo)
+    
+    if geslo == uporabnik.geslo:
+        if novo_geslo == potrditev:
+            uporabnik.geslo = hashSHA256(novo_geslo)
+        else:
+            raise Exception("Gesli se ne ujemata")
+    else:
+        raise Exception("Napačno geslo")
+
     shrani()
