@@ -34,6 +34,15 @@
                 "kečap",
                 "zabji kraki",
                 "limonada"
+            ],
+            [
+                "jajčka",
+                "kečap",
+                "pečenka in tenstan krompir",
+                "solata",
+                "limonada",
+                "zmlete ribice",
+                "zabji kraki"
             ]
         ]
     },
@@ -41,11 +50,9 @@
         "ime": "Marija",
         "geslo": "553ea40d61081e265be9ff8e931d959c81faca64ff66d987345b0ab0c0e753d3",
         "clani": [
-            "Marija",
-            "marija"
+            "Marija"
         ],
         "jedi": [
-            "šmorn",
             "lazanja",
             "bučkin narastek",
             "musaka",
@@ -80,7 +87,66 @@
         "clani": [
             "marija"
         ],
-        "jedi": [],
-        "jedilniki": []
+        "jedi": [
+            "palačinke",
+            "šmorn",
+            "solata",
+            "špinačna juha",
+            "pasulj",
+            "pečenka in tenstan krompir",
+            "goveja juha",
+            "tortilije",
+            "goveji zrezki in pečen krompir",
+            "pica",
+            "hamburgerji",
+            "zelje"
+        ],
+        "jedilniki": [
+            [
+                "pečenka in tenstan krompir",
+                "zelje",
+                "goveja juha",
+                "šmorn",
+                "goveji zrezki in pečen krompir",
+                "pasulj",
+                "hamburgerji"
+            ],
+            [
+                "zelje",
+                "tortilije",
+                "goveji zrezki in pečen krompir",
+                "palačinke",
+                "šmorn",
+                "špinačna juha",
+                "solata"
+            ],
+            [
+                "šmorn",
+                "solata",
+                "špinačna juha",
+                "palačinke",
+                "pasulj",
+                "pečenka in tenstan krompir",
+                "goveja juha"
+            ],
+            [
+                "goveja juha",
+                "špinačna juha",
+                "šmorn",
+                "pasulj",
+                "solata",
+                "palačinke",
+                "pečenka in tenstan krompir"
+            ],
+            [
+                "tortilije",
+                "goveji zrezki in pečen krompir",
+                "pica",
+                "šmorn",
+                "hamburgerji",
+                "pasulj",
+                "pečenka in tenstan krompir"
+            ]
+        ]
     }
 ]

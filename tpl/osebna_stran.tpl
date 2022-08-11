@@ -1,26 +1,26 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Jedilnik</title>
-</head>
-<body>
-<h1>Moj račun</h1>
-Živjo, {{ime}}. <br>
-Moja gospodinjstva:
-<ul>
-%for gospodinjstvo in gospodinjstva:
-  <li>
-  <a href='/stran_gospodinjstva/{{gospodinjstvo}}'> {{gospodinjstvo}} </a>
-  <a href='/zapusti_gospodinjstvo/{{gospodinjstvo}}'> Zapusti gospodinjstvo </a>
-  </li>
+% rebase('tpl/base.tpl', title="Jedilnik")
+    <div class = "glava">
+        <a class = "uporabnik" href="/osebna_stran"> {{ime}} </a>
+        <div class = "glava-desno">
+            <a href="/zamenjaj_geslo"> Zamenjaj geslo </a>
+            <a href="/odjava"> Odjava </a>
+        </div>
+    </div>
+    
+    <div class = "osnovno">
+        <p>Moja gospodinjstva:</p>
+        <ul>
+        %for gospodinjstvo in gospodinjstva:
+        <li>
+        <a class = "alineja" href="/stran_gospodinjstva/{{gospodinjstvo}}"> {{gospodinjstvo}} </a>
+        <a class = "gumbek1" href="/zapusti_gospodinjstvo/{{gospodinjstvo}}"> Zapusti gospodinjstvo </a>
+        </li>
+        %end
+        </ul>
+    
+    
+        <a class = "gumbek2" href="/dodaj_gospodinjstvo"> Dodaj gospodinjstvo </a>
+        <a class = "gumbek2" href="/pridruzi_se"> Pridruži se novemu gospodinjstvu </a>
+    </div>
+
 %end
-</ul>
-
-
-<a href='/dodaj_gospodinjstvo'> Dodaj gospodinjstvo </a>
-<a href='/pridruzi_se'> Pridruži se novemu gospodinjstvu </a>
-<a href='/zamenjaj_geslo'> Zamenjaj_geslo </a>
-<a href='/odjava'> Odjava </a>
-</body>
-
-</html>

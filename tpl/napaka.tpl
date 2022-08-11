@@ -1,13 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Jedilnik</title>
-</head>
-<body>
-<h1>{{naslov}}</h1>
-{{opis}}
+% rebase('tpl/base.tpl', title="Jedilnik")
 
-<a href="{{povezava}}"> {{gumb}} </a>
-</body>
+    <div class="na-sredini">
+        <div class="zozano">
+            <h1>{{naslov}}</h1>
+            <p>{{opis}}</p>
 
-</html>
+            <a class = "gumb" href="{{povezava}}"> {{gumb}} </a>
+        </div>
+    </div>
+
+%end

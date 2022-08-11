@@ -75,7 +75,8 @@ def registracija():
 
 @bottle.get("/zamenjaj_geslo")
 def indeks():
-    return bottle.template("tpl/zamenjaj_geslo.tpl")
+    uporabnisko_ime = preveri_uporabnika()
+    return bottle.template("tpl/zamenjaj_geslo.tpl", {'ime': uporabnisko_ime})
     
 @bottle.post("/zamenjaj_geslo")
 def zamenjaj_geslo():
@@ -89,7 +90,7 @@ def zamenjaj_geslo():
     except Exception as e:
         return bottle.template("tpl/napaka.tpl", naslov="Napaka pri menjavi gesla", opis=str(e), gumb="Poskusi ponovno", povezava="/zamenjaj_geslo")
     
-    return bottle.redirect("f/osebna_stran")
+    return bottle.redirect("/osebna_stran")
 
 @bottle.get("/odjava")
 def odjava():
@@ -98,7 +99,8 @@ def odjava():
 
 @bottle.get("/dodaj_gospodinjstvo")
 def indeks():
-    return bottle.template("tpl/dodaj_gospodinjstvo.tpl")
+    uporabnisko_ime = preveri_uporabnika()
+    return bottle.template("tpl/dodaj_gospodinjstvo.tpl", {'ime': uporabnisko_ime})
 
 @bottle.post("/dodaj_gospodinjstvo")
 def dodaj_gospodinjstvo():
@@ -108,8 +110,11 @@ def dodaj_gospodinjstvo():
 
     try:
         gospodinjstva.dodaj(ime, geslo, uporabnisko_ime)
-    except:
-        return bottle.redirect(f"/ze_obstaja/{ime}")
+    except Exception as e:
+        if str(e) == "ime_zasedeno":
+            return bottle.redirect(f"/ze_obstaja/{ime}")
+        else:
+            return bottle.template("tpl/napaka.tpl", naslov="Napaka", opis="Polja za uporabniško ime ali geslo ne smete pustiti praznega", gumb="Poskusi ponovno", povezava="/dodaj_gospodinjstvo")
     
     return bottle.redirect("/osebna_stran")
     
@@ -117,25 +122,10 @@ def dodaj_gospodinjstvo():
 def indeks(ime_gospodinjstva):
     return bottle.template("tpl/ze_obstaja.tpl", ime_gospodinjstva=ime_gospodinjstva)
 
-@bottle.get("/pridruzi_se_n/<ime_gospodinjstva>")
-def pridruzi_se_n(ime_gospodinjstva):
-    uporabnisko_ime = preveri_uporabnika()
-        
-    gospodinjstvo = gospodinjstva.poisci_z_imenom(ime_gospodinjstva)
-    
-    if gospodinjstvo is None:
-        return bottle.template("tpl/napaka.tpl", naslov="Napaka pri pridruzitvi gospodinjstvu", opis="To gospodinjstvo ne obstaja.", gumb="Nazaj na osebno stran.", povezava="/osebna_stran")
-        
-    try:
-        gospodinjstvo.dodaj_clana(uporabnisko_ime)
-    except:
-        return bottle.template("tpl/napaka.tpl", naslov="Napaka pri pridruzitvi gospodinjstvu", opis="Ste že član tega gospodinjstva! Ne morete se prodružiti ponovno.", gumb="Nazaj na osebno stran.", povezava="/osebna_stran")
-
-    return bottle.redirect("/osebna_stran")
-
 @bottle.get("/pridruzi_se")
 def indeks():
-    return bottle.template("tpl/pridruzi_se.tpl")
+    uporabnisko_ime = preveri_uporabnika()
+    return bottle.template("tpl/pridruzi_se.tpl", {'ime': uporabnisko_ime})
 
 @bottle.post("/pridruzi_se")
 def pridruzi_se():
@@ -143,11 +133,16 @@ def pridruzi_se():
     ime = request.forms.ime_gospodinjstva
     geslo = request.forms.geslo
     
+    gospodinjstvo = gospodinjstva.poisci_z_imenom(ime)
+    
+    if gospodinjstvo is None:
+        return bottle.template("tpl/napaka.tpl", naslov="Napaka pri pridružitvi gospodinjstvu", opis="To gospodinjstvo ne obstaja.", gumb="Poskusi ponovno.", povezava="/pridruzi_se")
+    
     gospodinjstvo = gospodinjstva.poisci(ime, geslo)
     
     if gospodinjstvo is None:
-        return bottle.template("tpl/napaka.tpl", naslov="Napaka pri pridruzitvi gospodinjstvu", opis="To gospodinjstvo ne obstaja.", gumb="Nazaj na osebno stran.", povezava="/osebna_stran")
-        
+        return bottle.template("tpl/napaka.tpl", naslov="Napaka pri pridružitvi gospodinjstvu", opis="Napačno geslo.", gumb="Poskusi ponovno.", povezava="/pridruzi_se")
+
     try:
         gospodinjstvo.dodaj_clana(uporabnisko_ime)
     except:
@@ -158,8 +153,9 @@ def pridruzi_se():
 @bottle.get("/stran_gospodinjstva/<ime>")
 def indeks(ime): 
     gospodinjstvo = gospodinjstva.poisci_z_imenom(ime)
+    uporabnisko_ime = preveri_uporabnika()
 
-    return bottle.template("tpl/stran_gospodinjstva.tpl", {"ime_gospodinjstva": ime, "clani": gospodinjstvo.clani, "jedi": gospodinjstvo.jedi})
+    return bottle.template("tpl/stran_gospodinjstva.tpl", {"ime" : uporabnisko_ime, "ime_gospodinjstva": ime, "clani": gospodinjstvo.clani, "jedi": gospodinjstvo.jedi})
 
 @bottle.get("/dodaj_jed/<gospodinjstvo>")
 def indeks(gospodinjstvo):
@@ -191,13 +187,14 @@ def zgeneriraj_jedilnik(ime):
         gospodinjstva.zgeneriraj_jedilnik(ime, teden)
     except:
         return bottle.template("tpl/napaka.tpl", naslov="Napaka pri generiranju jedilnika", opis="V bazi jedi tega gospodinjstva še ni dovolj jedi. Najprej dodajte zadostno količino jedi v bazo, nato pa poskusite ponovno.", gumb="Nazaj na stran gospodinjstva.", povezava=f"/stran_gospodinjstva/{ime}")
-    return bottle.redirect(f"/stran_gospodinjstva/{ime}")
+    return bottle.redirect(f"/jedilniki/{ime}")
 
 @bottle.get("/jedilniki/<ime_gospodinjstva>")
 def indeks(ime_gospodinjstva):
     gospodinjstvo = gospodinjstva.poisci_z_imenom(ime_gospodinjstva)
-            
-    return bottle.template("tpl/jedilniki.tpl", {"ime_gospodinjstva": ime_gospodinjstva, "jedilniki": gospodinjstvo.jedilniki})
+    uporabnisko_ime = preveri_uporabnika()
+    
+    return bottle.template("tpl/jedilniki.tpl", {"ime": uporabnisko_ime, "ime_gospodinjstva": ime_gospodinjstva, "jedilniki": gospodinjstvo.jedilniki})
 
 @bottle.get("/zapusti_gospodinjstvo/<ime_gospodinjstva>")
 def zapusti_gospodinjstvo(ime_gospodinjstva):
@@ -205,7 +202,7 @@ def zapusti_gospodinjstvo(ime_gospodinjstva):
     gospodinjstva.zapusti_gospodinjstvo(ime_gospodinjstva, uporabnisko_ime)
     
     return bottle.redirect("/osebna_stran")
-
+ 
 @bottle.get("/izbriši_jed/<ime_gospodinjstva>/<ime_jedi>")
 def izbriši_jed(ime_gospodinjstva, ime_jedi):
     gospodinjstva.izbriši_jed(ime_gospodinjstva, ime_jedi)
@@ -217,5 +214,13 @@ def izbriši_jedilnik(ime_gospodinjstva, indeks):
     gospodinjstva.izbriši_jedilnik(ime_gospodinjstva, indeks)
         
     return bottle.redirect(f"/jedilniki/{ime_gospodinjstva}")
+
+@bottle.get("/style.css")
+def slog():
+    return bottle.static_file("style.css", root="tpl")
+
+@bottle.get("/normalize.css")
+def slog():
+    return bottle.static_file("normalize.css", root="tpl")
 
 run(host='localhost', port=8080, reloader=True)

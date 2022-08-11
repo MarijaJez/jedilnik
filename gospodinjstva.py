@@ -67,8 +67,12 @@ def seznam_uporabnika(uporabnisko_ime):
 
 def dodaj(ime, geslo, lastnik):
     global gospodinjstva
+    
+    if ime == "" or geslo == "":
+        raise Exception("Polja za uporabniško ime ali geslo ne smete pustiti praznega")
+
     if poisci_z_imenom(ime) is not None:
-        raise Exception("To ime gospodinjstva je že zasedeno")
+        raise Exception("ime_zasedeno")
     else:
         gospodinjstva.append(Gospodinjstvo(ime,  hashSHA256(geslo), [lastnik], [], []))
     
@@ -107,7 +111,7 @@ def zgeneriraj_jedilnik(ime, teden):
             
     for gospodinjstvo in gospodinjstva:
         if gospodinjstvo.ime == ime:
-            gospodinjstvo.jedilniki.append(teden)
+            gospodinjstvo.jedilniki.insert(0, teden)
 
     shrani()
 

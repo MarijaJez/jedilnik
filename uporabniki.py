@@ -42,15 +42,18 @@ def poisci_z_imenom(uporabnisko_ime):
 
     return None
 
-def dodaj( uporabnisko_ime, geslo, potrditev):
-    if geslo == potrditev:
-        if poisci_z_imenom(uporabnisko_ime) is not None:
-            raise Exception(f"Uporabniško ime '{uporabnisko_ime}' že obstaja! Izberite si novo ime in se poskusite ponovno registrirati.")
-        else:
-            uporabniki.append(Uporabnik(uporabnisko_ime,  hashSHA256(geslo)))
-    else:
-        raise Exception("Gesli se ne ujemata")
+def dodaj(uporabnisko_ime, geslo, potrditev):
+    if uporabnisko_ime == "" or geslo == "":
+        raise Exception("Polja za uporabniško ime ali geslo ne smete pustiti praznega")
     
+    if poisci_z_imenom(uporabnisko_ime) is None:
+        if geslo == potrditev:
+            uporabniki.append(Uporabnik(uporabnisko_ime,  hashSHA256(geslo)))
+        else:
+            raise Exception("Gesli se ne ujemata")
+    else:
+        raise Exception(f"Uporabniško ime '{uporabnisko_ime}' že obstaja! Izberite si novo ime in se poskusite ponovno registrirati.")
+
     shrani()
 
 def zamenjaj_geslo(uporabnisko_ime, geslo, novo_geslo, potrditev):

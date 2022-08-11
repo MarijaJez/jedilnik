@@ -1,28 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Jedilnik</title>
-</head>
-<body>
-<h1>{{ime_gospodinjstva}}</h1>
+% rebase('tpl/base.tpl', title="Jedilnik")
 
-%for indeks, jedilnik in enumerate(jedilniki):
-<table border="1">
-    %imena_dnevov = ["ponedeljek", "torek", "sreda", "četrtek", "petek", "sobota", "nedelja"]
-    %for dan, jed in zip(imena_dnevov, jedilnik):
-        <tr>
-            <td>{{dan}}</td>
-            <td>{{jed}}</td>
-        </tr>
-    %end
-<a href='/izbriši_jedilnik/{{ime_gospodinjstva}}/{{indeks}}'> Izbriši ta jedilnik. </a>
+    <div class = "glava">
+        <a class = "uporabnik" href="/osebna_stran"> {{ime}} </a>
+    </div>
+
+    <div class = "glava-gospodinjstva">
+        <a class = "gospodinjstvo" href="/stran_gospodinjstva/{{ime_gospodinjstva}}"> {{ime_gospodinjstva}} </a>
+        <div class = "glava-desno">
+            <a class = "gumbek2" href="/nov_jedilnik/{{ime_gospodinjstva}}"> Nov jedilnik </a>
+        </div>
+    </div>
+
+    <div class = "osnovno">
+        <p>Vaši jedilniki:</p>
+        <div class = "tabele">
+            %for indeks, jedilnik in enumerate(jedilniki):
+            <table>
+                %imena_dnevov = ["ponedeljek", "torek", "sreda", "četrtek", "petek", "sobota", "nedelja"]
+                %for dan, jed in zip(imena_dnevov, jedilnik):
+                    <tr>
+                        <td>{{dan}}</td>
+                        <td>{{jed}}</td>
+                    </tr>
+                %end
+            </table>
+            <a class = "gumbek2" href="/izbriši_jedilnik/{{ime_gospodinjstva}}/{{indeks}}"> Izbriši ta jedilnik. </a>
+            %end
+        </div>
+    </div>
+
 %end
-</table>
-
-<a href='/nov_jedilnik/{{ime_gospodinjstva}}'> Ustvarite nov jedilnik. </a>
-<a href='/stran_gospodinjstva/{{ime_gospodinjstva}}'> Nazaj na stran gospodinjstva. </a>
-
-<a href='/osebna_stran'> Nazaj na osebno stran. </a>
-</body>
-
-</html>
