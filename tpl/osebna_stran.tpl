@@ -13,8 +13,8 @@ Moja gospodinjstva:
   <a href='/stran_gospodinjstva/{{gospodinjstvo}}'> {{gospodinjstvo}} </a>
   <a href='/zapusti_gospodinjstvo/{{gospodinjstvo}}'> Zapusti gospodinjstvo </a>
   </li>
-</ul>
 %end
+</ul>
 
 
 <a href='/dodaj_gospodinjstvo'> Dodaj gospodinjstvo </a>

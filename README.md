@@ -2,7 +2,7 @@
 projektna naloga pri predmetu UVP 2022
 
 TO DO:
-- unikatne jedi (DONE)
-- prijavljene uporabnike namesto na stran za prijavo ali stran za registracijo preusmeri na osebno stran (DONE)
-- ločene strani za različne napake (DONE)
-- razredi
+- spremeni geslo
+- razredi (DONE)
+- popravi, da se ne moreš na novo registrirati z istim imenom (DONE)
+- namesto pri ustvarjanju gospodinjstva mora napisati 7 jedi, preden ustvari 1. jedlinik
