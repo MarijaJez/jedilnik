@@ -168,9 +168,10 @@ def zgeneriraj_jedilnik(ime):
     sobota = request.forms.sobota
     nedelja = request.forms.nedelja
     teden = [ponedeljek, torek, sreda, četrtek, petek, sobota, nedelja]
-    
-    gospodinjstva.zgeneriraj_jedilnik(ime, teden)
-    
+    try:
+        gospodinjstva.zgeneriraj_jedilnik(ime, teden)
+    except:
+        return bottle.template("tpl/napaka.tpl", naslov="Napaka pri generiranju jedilnika", opis="V bazi jedi tega gospodinjstva še ni dovolj jedi. Najprej dodajte zadostno količino jedi v bazo, nato pa poskusite ponovno.", gumb="Nazaj na stran gospodinjstva.", povezava=f"/stran_gospodinjstva/{ime}")
     return bottle.redirect(f"/stran_gospodinjstva/{ime}")
 
 @bottle.get("/jedilniki/<ime_gospodinjstva>")

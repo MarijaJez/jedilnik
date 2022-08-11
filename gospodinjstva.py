@@ -94,6 +94,9 @@ def zgeneriraj_jedilnik(ime, teden):
         if dan == "":
             prazni += 1
 
+    if len(gospodinjstvo.jedi) < prazni:
+        raise Exception("V bazi ni dovolj jedi")
+
     dodaj = random.sample(jedi, prazni)
     for i, dan in enumerate(teden):
         if dan == "":
