@@ -1,13 +1,14 @@
-html, body {
+html,
+body {
     height: 100%;
 }
 
-body{
+body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #f8faff;
 }
 
-.zozano{
+.zozano {
     max-width: 500px;
     border: 1px #eee solid;
     width: 500px;
@@ -16,22 +17,23 @@ body{
     padding: 10px;
 }
 
-.zozano h1, .zozano p{
+.zozano h1,
+.zozano p {
     margin: 30px 20px;
     text-align: center;
 }
 
-.zozano h1{
+.zozano h1 {
     font-size: 50px;
     margin: 40px 20px 30px;
 }
 
-.gumbi{
+.gumbi {
     display: flex;
     margin: 10px;
 }
 
-.gumb{
+.gumb {
     width: 100%;
     background: #2163db;
     padding: 20px;
@@ -51,11 +53,11 @@ body{
     align-items: center;
 }
 
-form{
+form {
     padding: 20px;
 }
 
-form input{
+form input {
     margin: 0;
     width: 100%;
     box-sizing: border-box;
@@ -64,11 +66,11 @@ form input{
     border-radius: 5px;
 }
 
-form .gumb{
+form .gumb {
     margin: 0;
 }
 
-form label{
+form label {
     display: inline-block;
     margin: 0px 0 4px;
     color: #6d6d6d;
@@ -79,6 +81,7 @@ form label{
     background-color: #2163db63;
     padding: 20px 10px;
 }
+
 .glava a {
     float: left;
     color: black;
@@ -89,6 +92,7 @@ form label{
     line-height: 25px;
     border-radius: 5px;
 }
+
 .glava .uporabnik {
     display: block;
     font-size: 30px;
@@ -106,9 +110,10 @@ form label{
         display: block;
         text-align: left;
     }
+
     .glava-desno {
         float: none;
-        }
+    }
 }
 
 .osnovno {
@@ -185,9 +190,10 @@ form label{
         display: block;
         text-align: left;
     }
+
     .glava-desno {
         float: none;
-        }
+    }
 }
 
 table {
@@ -195,8 +201,9 @@ table {
     border: 1px solid #ddd;
     width: 100%;
 }
-  
-th, td {
+
+th,
+td {
     padding: 8px;
     text-align: left;
     border-bottom: 1px solid #ddd;
