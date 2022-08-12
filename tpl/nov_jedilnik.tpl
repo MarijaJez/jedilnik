@@ -12,8 +12,8 @@
                 <input type="text" id="torek" name="torek"><br><br>
                 <label for="sreda"> Sreda: </label>
                 <input type="text" id="sreda" name="sreda"><br><br>
-                <label for="četrtek"> Četrtek: </label>
-                <input type="text" id="četrtek" name="četrtek"><br><br>
+                <label for="cetrtek"> Četrtek: </label>
+                <input type="text" id="cetrtek" name="cetrtek"><br><br>
                 <label for="petek"> Petek: </label>
                 <input type="text" id="petek" name="petek"><br><br>
                 <label for="sobota"> Sobota: </label>

@@ -151,7 +151,7 @@ def pridruzi_se():
     return bottle.redirect("/osebna_stran")
 
 @bottle.get("/stran_gospodinjstva/<ime>")
-def indeks(ime): 
+def indeks(ime):   
     gospodinjstvo = gospodinjstva.poisci_z_imenom(ime)
     uporabnisko_ime = preveri_uporabnika()
 
@@ -178,16 +178,17 @@ def zgeneriraj_jedilnik(ime):
     ponedeljek = request.forms.ponedeljek
     torek = request.forms.torek
     sreda = request.forms.sreda
-    četrtek = request.forms.četrtek
+    četrtek = request.forms.cetrtek
     petek = request.forms.petek
     sobota = request.forms.sobota
     nedelja = request.forms.nedelja
     teden = [ponedeljek, torek, sreda, četrtek, petek, sobota, nedelja]
+    
     try:
         gospodinjstva.zgeneriraj_jedilnik(ime, teden)
     except:
         return bottle.template("tpl/napaka.tpl", naslov="Napaka pri generiranju jedilnika", opis="V bazi jedi tega gospodinjstva še ni dovolj jedi. Najprej dodajte zadostno količino jedi v bazo, nato pa poskusite ponovno.", gumb="Nazaj na stran gospodinjstva.", povezava=f"/stran_gospodinjstva/{ime}")
-    return bottle.redirect(f"/jedilniki/{ime}")
+    return bottle.redirect(f"/stran_gospodinjstva/{ime}")
 
 @bottle.get("/jedilniki/<ime_gospodinjstva>")
 def indeks(ime_gospodinjstva):
@@ -214,6 +215,20 @@ def izbriši_jedilnik(ime_gospodinjstva, indeks):
     gospodinjstva.izbriši_jedilnik(ime_gospodinjstva, indeks)
         
     return bottle.redirect(f"/jedilniki/{ime_gospodinjstva}")
+
+@bottle.get("/všečkaj/<ime_gospodinjstva>/<ime_jedi>")
+def všečkaj(ime_gospodinjstva, ime_jedi):
+    uporabnik = preveri_uporabnika()
+    gospodinjstva.všečkaj(uporabnik, ime_gospodinjstva, ime_jedi)
+
+    return bottle.redirect(f"/stran_gospodinjstva/{ime_gospodinjstva}")
+
+@bottle.get("/nevšečkaj/<ime_gospodinjstva>/<ime_jedi>")
+def nevšečkaj(ime_gospodinjstva, ime_jedi):
+    uporabnik = preveri_uporabnika()
+    gospodinjstva.nevšečkaj(uporabnik, ime_gospodinjstva, ime_jedi)
+
+    return bottle.redirect(f"/stran_gospodinjstva/{ime_gospodinjstva}")
 
 @bottle.get("/style.css")
 def slog():

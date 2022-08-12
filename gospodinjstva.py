@@ -83,16 +83,39 @@ def dodaj_jed(ime, jed):
     gospodinjstvo = poisci_z_imenom(ime)
     
     if jed not in gospodinjstvo.jedi:
-        gospodinjstvo.jedi.append(jed)
+        gospodinjstvo.jedi.append({"ime_jedi": jed, "všeč": [], "ni všeč": []})
     
     shrani()
+
+def obtezi(jedi, clani_gospodinjstva):
+    seznam = []
+    for jed in jedi:
+        z = len(clani_gospodinjstva) + 1
+        z += len(jed["všeč"])
+        z -= len(jed["ni všeč"])
+        while z:
+            seznam.append(jed["ime_jedi"])
+            z -= 1
+
+    return seznam
+
+def izberi(obtezen_seznam, koliko):
+    izbrani = []
+    while koliko:
+        izbira = random.choice(obtezen_seznam)
+        while izbira in obtezen_seznam:
+            obtezen_seznam.remove(izbira)
+        izbrani.append(izbira)
+        koliko -= 1
+
+    return izbrani
     
 def zgeneriraj_jedilnik(ime, teden):
     global gospodinjstva
     prazni = 0
     
     gospodinjstvo = poisci_z_imenom(ime)
-    jedi = gospodinjstvo.jedi
+    jedi = [jed["ime_jedi"] for jed in gospodinjstvo.jedi]
             
     for dan in teden:
         if dan == "":
@@ -101,13 +124,18 @@ def zgeneriraj_jedilnik(ime, teden):
     if len(gospodinjstvo.jedi) < prazni:
         raise Exception("V bazi ni dovolj jedi")
 
-    dodaj = random.sample(jedi, prazni)
+    j = gospodinjstvo.jedi
+    c = gospodinjstvo.clani
+
+    obtezene_jedi = obtezi(j, c)
+    dodaj = izberi(obtezene_jedi, prazni)
+
     for i, dan in enumerate(teden):
         if dan == "":
             teden[i] = dodaj[prazni - 1]
             prazni -= 1
         elif dan not in jedi:
-            jedi.append(dan)
+            gospodinjstvo.jedi.append({"ime_jedi": dan, "všeč": [], "ni všeč": []})
             
     for gospodinjstvo in gospodinjstva:
         if gospodinjstvo.ime == ime:
@@ -125,7 +153,10 @@ def zapusti_gospodinjstvo(ime_gospodinjstva, uporabnisko_ime):
 def izbriši_jed(ime_gospodinjstva, ime_jedi):
     global gospodinjstva
     gospodinjstvo = poisci_z_imenom(ime_gospodinjstva)   
-    gospodinjstvo.jedi.remove(ime_jedi)
+    for j in gospodinjstvo.jedi:
+        if j["ime_jedi"] == ime_jedi:
+            jed = j
+    gospodinjstvo.jedi.remove(jed)
             
     shrani()
     
@@ -134,4 +165,30 @@ def izbriši_jedilnik(ime_gospodinjstva, indeks):
     gospodinjstvo = poisci_z_imenom(ime_gospodinjstva)
     gospodinjstvo.jedilniki.pop(int(indeks))
             
+    shrani()
+
+def všečkaj(uporabnik, ime_gospodinjstva, ime_jedi):
+    global gospodinjstva
+    gospodinjstvo = poisci_z_imenom(ime_gospodinjstva)
+
+    for j in gospodinjstvo.jedi:
+        if j["ime_jedi"] == ime_jedi:
+            if uporabnik in j["všeč"]:
+                j["všeč"].remove(uporabnik)
+            else:
+                j["všeč"].append(uporabnik)
+
+    shrani()
+
+def nevšečkaj(uporabnik, ime_gospodinjstva, ime_jedi):
+    global gospodinjstva
+    gospodinjstvo = poisci_z_imenom(ime_gospodinjstva)
+
+    for j in gospodinjstvo.jedi:
+        if j["ime_jedi"] == ime_jedi:
+            if uporabnik in j["ni všeč"]:
+                j["ni všeč"].remove(uporabnik)
+            else:
+                j["ni všeč"].append(uporabnik)
+
     shrani()

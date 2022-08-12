@@ -110,7 +110,7 @@ form label{
 }
 
 .osnovno {
-    padding: 0px 20px 0px;
+    padding: 0px 40px 0px;
 }
 
 .gumbek1 {
@@ -119,11 +119,19 @@ form label{
     color: black;
     border: 2px solid #e7e7e7;
     padding: 0px 4px 0px;
-    margin: 0px 15px 0px;
+    margin: 0px 0px 0px;
     display: inline-block;
     text-align: center;
     text-decoration: none;
     border-radius: 4px;
+}
+
+.gumbek1.vizbrano {
+    background-color: #e7e7e7;
+}
+
+.gumbek1.nizbrano {
+    background-color: #e7e7e7;
 }
 
 .gumbek2 {
@@ -165,7 +173,7 @@ form label{
     font-weight: bold;
 }
 
-.glava-gospodinjstva .gumbek2{
+.glava-gospodinjstva .gumbek2 {
     margin: 4px;
 }
 
@@ -199,7 +207,7 @@ th, td {
 }
 
 .row {
-    display: block;
+    display: flex;
 }
 
 .column {
@@ -215,14 +223,12 @@ th, td {
     width: 100%;
 }
 
-/* .row:after {
-    content: "";
-    display: table;
-    clear: both;
-} */
+.alineje {
+    width: 250px;
+    margin: 0px;
+    display: inline-block;
+}
 
-/* @media (max-width: 600px) {
-    .column.side, .column.middle {
-        width: 100%;
-    }
-} */
+p {
+    font-size: 17px;
+}
