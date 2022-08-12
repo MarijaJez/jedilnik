@@ -5,7 +5,9 @@
             <h1>{{naslov}}</h1>
             <p>{{opis}}</p>
 
-            <a class = "gumb" href="{{povezava}}"> {{gumb}} </a>
+            <div class="gumbi">
+                <a class="gumb" href="{{povezava}}"> {{gumb}} </a>
+            </div>
         </div>
     </div>
 

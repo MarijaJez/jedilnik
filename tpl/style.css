@@ -13,6 +13,7 @@ body{
     width: 500px;
     border-radius: 5px;
     background: #fff;
+    padding: 10px;
 }
 
 .zozano h1, .zozano p{
@@ -38,8 +39,9 @@ body{
     color: white;
     text-decoration: none;
     margin: 10px;
-    display: inline-block;
+    display: block;
     text-align: center;
+    box-sizing: border-box;
 }
 
 .na-sredini {

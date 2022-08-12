@@ -81,8 +81,9 @@ def dodaj(ime, geslo, lastnik):
 def dodaj_jed(ime, jed):
     global gospodinjstva
     gospodinjstvo = poisci_z_imenom(ime)
+    jedi = [j["ime_jedi"] for j in gospodinjstvo.jedi]
     
-    if jed not in gospodinjstvo.jedi:
+    if jed not in jedi and jed != "":
         gospodinjstvo.jedi.append({"ime_jedi": jed, "všeč": [], "ni všeč": []})
     
     shrani()
@@ -147,6 +148,11 @@ def zapusti_gospodinjstvo(ime_gospodinjstva, uporabnisko_ime):
     global gospodinjstva
     gospodinjstvo = poisci_z_imenom(ime_gospodinjstva)
     gospodinjstvo.clani.remove(uporabnisko_ime)
+    for jed in gospodinjstvo.jedi:
+        if uporabnisko_ime in jed["všeč"]:
+            jed["všeč"].remove(uporabnisko_ime)
+        if uporabnisko_ime in jed["ni všeč"]:
+            jed["ni všeč"].remove(uporabnisko_ime)
             
     shrani()
     

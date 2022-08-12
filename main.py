@@ -120,7 +120,8 @@ def dodaj_gospodinjstvo():
     
 @bottle.get("/ze_obstaja/<ime_gospodinjstva>")
 def indeks(ime_gospodinjstva):
-    return bottle.template("tpl/ze_obstaja.tpl", ime_gospodinjstva=ime_gospodinjstva)
+    ime = preveri_uporabnika()
+    return bottle.template("tpl/ze_obstaja.tpl", {"ime_gospodinjstva": ime_gospodinjstva, "ime": ime})
 
 @bottle.get("/pridruzi_se")
 def indeks():
@@ -146,7 +147,7 @@ def pridruzi_se():
     try:
         gospodinjstvo.dodaj_clana(uporabnisko_ime)
     except:
-        return bottle.template("tpl/napaka.tpl", naslov="Napaka pri pridruzitvi gospodinjstvu", opis="Ste že član tega gospodinjstva! Ne morete se prodružiti ponovno.", gumb="Nazaj na osebno stran.", povezava="/osebna_stran")
+        return bottle.template("tpl/napaka.tpl", naslov="Napaka pri pridružitvi gospodinjstvu", opis="Ste že član tega gospodinjstva! Ne morete se prodružiti ponovno.", gumb="Nazaj na osebno stran.", povezava="/osebna_stran")
 
     return bottle.redirect("/osebna_stran")
 

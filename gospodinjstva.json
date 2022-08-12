@@ -1,20 +1,24 @@
 [
     {
-        "ime": "marija",
-        "geslo": "015ef7cb46d3c512fd27798011b106ec8a3574fd95877a65025cbe836eed75d5",
+        "ime": "Jezeršek",
+        "geslo": "b92bf1925e441ce17631227cb338474f6c838ab22d7666458bd1fcd69078c20c",
         "clani": [
-            "marija"
+            "Marija"
         ],
         "jedi": [
             {
                 "ime_jedi": "palačinke",
-                "všeč": [],
+                "všeč": [
+                    "Marija"
+                ],
                 "ni všeč": []
             },
             {
                 "ime_jedi": "šmorn",
                 "všeč": [],
-                "ni všeč": []
+                "ni všeč": [
+                    "Marija"
+                ]
             },
             {
                 "ime_jedi": "špinačna juha",
@@ -22,7 +26,7 @@
                 "ni všeč": []
             },
             {
-                "ime_jedi": "zmlete ribice",
+                "ime_jedi": "ribe in ocvrt krompirček",
                 "všeč": [],
                 "ni všeč": []
             },
@@ -32,88 +36,48 @@
                 "ni všeč": []
             },
             {
-                "ime_jedi": "goveja juha",
+                "ime_jedi": "njoki v sirovi omaki",
                 "všeč": [],
                 "ni všeč": []
             },
             {
-                "ime_jedi": "telečja pečenka",
+                "ime_jedi": "pica",
+                "všeč": [],
+                "ni všeč": []
+            },
+            {
+                "ime_jedi": "jajčka",
                 "všeč": [],
                 "ni všeč": []
             }
         ],
         "jedilniki": [
             [
-                "šmorn",
-                "telečja pečenka",
-                "zmlete ribice",
-                "špinačna juha",
-                "goveja juha",
+                "jajčka",
+                "ribe in ocvrt krompirček",
+                "njoki v sirovi omaki",
                 "palačinke",
-                "pečenka in tenstan krompir"
-            ],
-            [
-                "goveja juha",
                 "pečenka in tenstan krompir",
-                "špinačna juha",
-                "šmorn",
-                "palačinke",
-                "zmlete ribice",
-                "telečja pečenka"
+                "pica",
+                "šmorn"
             ],
             [
-                "goveja juha",
-                "telečja pečenka",
+                "ribe in ocvrt krompirček",
+                "špinačna juha",
+                "njoki v sirovi omaki",
                 "pečenka in tenstan krompir",
                 "palačinke",
-                "šmorn",
-                "špinačna juha",
-                "zmlete ribice"
-            ],
-            [
-                "šmorn",
-                "zmlete ribice",
-                "goveja juha",
-                "špinačna juha",
-                "pečenka in tenstan krompir",
-                "telečja pečenka",
-                "palačinke"
-            ],
-            [
-                "goveja juha",
-                "palačinke",
-                "špinačna juha",
-                "zmlete ribice",
-                "pečenka in tenstan krompir",
-                "šmorn",
-                "telečja pečenka"
+                "jajčka",
+                "šmorn"
             ],
             [
                 "palačinke",
                 "šmorn",
-                "solata",
+                "njoki v sirovi omaki",
                 "špinačna juha",
-                "zmlete ribice",
+                "ribe in ocvrt krompirček",
                 "pečenka in tenstan krompir",
-                "goveja juha"
-            ],
-            [
-                "zmlete ribice",
-                "šmorn",
-                "špinačna juha",
-                "pečenka in tenstan krompir",
-                "palačinke",
-                "goveja juha z rezanci",
-                "solata"
-            ],
-            [
-                "špinačna juha",
-                "zmlete ribice",
-                "palačinke",
-                "šmorn",
-                "solata",
-                "goveja juha z rezanci",
-                "pečenka in tenstan krompir"
+                "pica"
             ]
         ]
     }
