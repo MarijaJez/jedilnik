@@ -155,7 +155,7 @@ def indeks(ime):
     gospodinjstvo = gospodinjstva.poisci_z_imenom(ime)
     uporabnisko_ime = preveri_uporabnika()
 
-    return bottle.template("tpl/stran_gospodinjstva.tpl", {"ime" : uporabnisko_ime, "ime_gospodinjstva": ime, "clani": gospodinjstvo.clani, "jedi": gospodinjstvo.jedi})
+    return bottle.template("tpl/stran_gospodinjstva.tpl", {"ime" : uporabnisko_ime, "ime_gospodinjstva": ime, "clani": gospodinjstvo.clani, "jedi": gospodinjstvo.jedi, "jedilniki": gospodinjstvo.jedilniki})
 
 @bottle.get("/dodaj_jed/<gospodinjstvo>")
 def indeks(gospodinjstvo):

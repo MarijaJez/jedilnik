@@ -186,7 +186,7 @@ table {
     width: 100%;
 }
   
-  th, td {
+th, td {
     padding: 8px;
     text-align: left;
     border-bottom: 1px solid #ddd;
@@ -197,3 +197,32 @@ table {
     width: 500px;
     border-radius: 5px;
 }
+
+.row {
+    display: block;
+}
+
+.column {
+    float: left;
+    padding: 10px;
+}
+
+.column.side {
+    min-width: 300px;
+}
+
+.column.middle {
+    width: 100%;
+}
+
+/* .row:after {
+    content: "";
+    display: table;
+    clear: both;
+} */
+
+/* @media (max-width: 600px) {
+    .column.side, .column.middle {
+        width: 100%;
+    }
+} */
