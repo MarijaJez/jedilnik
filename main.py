@@ -1,22 +1,14 @@
 SKRIVNOST = "r!atk!XJH1UXAZ0$U#*BN8bYb34MMC&RCy$3Gw&qgv9$44zYS7"
 
-import imp
 import bottle
-import hashlib
-from bottle import route, run, template, request
-import json
-import random
+from bottle import run, request
 
-import uporabniki
-import gospodinjstva
+from pomozne_funkcije import hashSHA256
+from uporabniki import Uporabnik, Uporabniki
+from gospodinjstva import Gospodinjstva
 
-uporabniki.preberi()
-gospodinjstva.preberi()
-
-
-def hashSHA256(s):
-    h = hashlib.sha256(s.encode("utf8"))
-    return h.hexdigest()
+gospodinjstva = Gospodinjstva()
+uporabniki = Uporabniki()
 
 
 def preveri_uporabnika(redirect=True):
@@ -109,9 +101,10 @@ def zamenjaj_geslo():
     geslo = hashSHA256(request.forms.geslo)
     novo_geslo = request.forms.novo_geslo
     potrditev = request.forms.potrditev
+    uporabnik = Uporabnik(uporabniki, uporabnisko_ime, geslo)
 
     try:
-        uporabniki.zamenjaj_geslo(uporabnisko_ime, geslo, novo_geslo, potrditev)
+        uporabnik.zamenjaj_geslo(geslo, novo_geslo, potrditev)
     except Exception as e:
         return bottle.template(
             "tpl/napaka.tpl",
@@ -151,7 +144,7 @@ def dodaj_gospodinjstvo():
             return bottle.template(
                 "tpl/napaka.tpl",
                 naslov="Napaka",
-                opis="Polja za uporabniško ime ali geslo ne smete pustiti praznega",
+                opis=str(e),
                 gumb="Poskusi ponovno",
                 povezava="/dodaj_gospodinjstvo",
             )
@@ -240,15 +233,17 @@ def indeks(gospodinjstvo):
 @bottle.post("/dodaj_jed/<ime>")
 def dodaj_jed(ime):
     jed = request.forms.ime_jedi
-    gospodinjstva.dodaj_jed(ime, jed)
+    gospodinjstvo = gospodinjstva.poisci_z_imenom(ime)
+    gospodinjstvo.dodaj_jed(jed)
 
     return bottle.redirect(f"/stran_gospodinjstva/{ime}")
 
 
 @bottle.get("/nov_jedilnik/<ime_gospodinjstva>")
 def indeks(ime_gospodinjstva):
+    ime = preveri_uporabnika()
     return bottle.template(
-        "tpl/nov_jedilnik.tpl", {"ime_gospodinjstva": ime_gospodinjstva}
+        "tpl/nov_jedilnik.tpl", {"ime": ime, "ime_gospodinjstva": ime_gospodinjstva}
     )
 
 
@@ -264,8 +259,9 @@ def zgeneriraj_jedilnik(ime):
     nedelja = request.forms.nedelja
     teden = [ponedeljek, torek, sreda, četrtek, petek, sobota, nedelja]
 
+    gospodinjstvo = gospodinjstva.poisci_z_imenom(ime)
     try:
-        gospodinjstva.zgeneriraj_jedilnik(ime, teden)
+        gospodinjstvo.zgeneriraj_jedilnik(teden)
     except:
         return bottle.template(
             "tpl/napaka.tpl",
@@ -295,21 +291,24 @@ def indeks(ime_gospodinjstva):
 @bottle.get("/zapusti_gospodinjstvo/<ime_gospodinjstva>")
 def zapusti_gospodinjstvo(ime_gospodinjstva):
     uporabnisko_ime = preveri_uporabnika()
-    gospodinjstva.zapusti_gospodinjstvo(ime_gospodinjstva, uporabnisko_ime)
+    gospodinjstvo = gospodinjstva.poisci_z_imenom(ime_gospodinjstva)
+    gospodinjstvo.zapusti_gospodinjstvo(uporabnisko_ime)
 
     return bottle.redirect("/osebna_stran")
 
 
 @bottle.get("/izbriši_jed/<ime_gospodinjstva>/<ime_jedi>")
 def izbriši_jed(ime_gospodinjstva, ime_jedi):
-    gospodinjstva.izbriši_jed(ime_gospodinjstva, ime_jedi)
+    gospodinjstvo = gospodinjstva.poisci_z_imenom(ime_gospodinjstva)
+    gospodinjstvo.izbriši_jed(ime_jedi)
 
     return bottle.redirect(f"/stran_gospodinjstva/{ime_gospodinjstva}")
 
 
 @bottle.get("/izbriši_jedilnik/<ime_gospodinjstva>/<indeks>")
 def izbriši_jedilnik(ime_gospodinjstva, indeks):
-    gospodinjstva.izbriši_jedilnik(ime_gospodinjstva, indeks)
+    gospodinjstvo = gospodinjstva.poisci_z_imenom(ime_gospodinjstva)
+    gospodinjstvo.izbriši_jedilnik(indeks)
 
     return bottle.redirect(f"/jedilniki/{ime_gospodinjstva}")
 
@@ -317,7 +316,8 @@ def izbriši_jedilnik(ime_gospodinjstva, indeks):
 @bottle.get("/všečkaj/<ime_gospodinjstva>/<ime_jedi>")
 def všečkaj(ime_gospodinjstva, ime_jedi):
     uporabnik = preveri_uporabnika()
-    gospodinjstva.všečkaj(uporabnik, ime_gospodinjstva, ime_jedi)
+    gospodinjstvo = gospodinjstva.poisci_z_imenom(ime_gospodinjstva)
+    gospodinjstvo.všečkaj(uporabnik, ime_jedi)
 
     return bottle.redirect(f"/stran_gospodinjstva/{ime_gospodinjstva}")
 
@@ -325,7 +325,8 @@ def všečkaj(ime_gospodinjstva, ime_jedi):
 @bottle.get("/nevšečkaj/<ime_gospodinjstva>/<ime_jedi>")
 def nevšečkaj(ime_gospodinjstva, ime_jedi):
     uporabnik = preveri_uporabnika()
-    gospodinjstva.nevšečkaj(uporabnik, ime_gospodinjstva, ime_jedi)
+    gospodinjstvo = gospodinjstva.poisci_z_imenom(ime_gospodinjstva)
+    gospodinjstvo.nevšečkaj(uporabnik, ime_jedi)
 
     return bottle.redirect(f"/stran_gospodinjstva/{ime_gospodinjstva}")
 

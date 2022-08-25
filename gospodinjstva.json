@@ -53,13 +53,13 @@
         ],
         "jedilniki": [
             [
+                "šmorn",
+                "pica",
+                "pečenka in tenstan krompir",
+                "njoki v sirovi omaki",
                 "jajčka",
                 "ribe in ocvrt krompirček",
-                "njoki v sirovi omaki",
-                "palačinke",
-                "pečenka in tenstan krompir",
-                "pica",
-                "šmorn"
+                "špinačna juha"
             ],
             [
                 "ribe in ocvrt krompirček",
@@ -78,6 +78,115 @@
                 "ribe in ocvrt krompirček",
                 "pečenka in tenstan krompir",
                 "pica"
+            ]
+        ]
+    },
+    {
+        "ime": "test",
+        "geslo": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+        "clani": [
+            "Marija",
+            "test"
+        ],
+        "jedi": [
+            {
+                "ime_jedi": "jajčka",
+                "všeč": [
+                    "Marija"
+                ],
+                "ni všeč": []
+            },
+            {
+                "ime_jedi": "palačinke",
+                "všeč": [
+                    "Marija"
+                ],
+                "ni všeč": []
+            },
+            {
+                "ime_jedi": "šmorn",
+                "všeč": [
+                    "Marija"
+                ],
+                "ni všeč": []
+            },
+            {
+                "ime_jedi": "solata",
+                "všeč": [
+                    "Marija"
+                ],
+                "ni všeč": []
+            },
+            {
+                "ime_jedi": "špinačna juha",
+                "všeč": [],
+                "ni všeč": []
+            },
+            {
+                "ime_jedi": "postrvi na žaru",
+                "všeč": [],
+                "ni všeč": [
+                    "Marija"
+                ]
+            },
+            {
+                "ime_jedi": "pečenka in tenstan krompir",
+                "všeč": [
+                    "Marija"
+                ],
+                "ni všeč": []
+            },
+            {
+                "ime_jedi": "goveja juha",
+                "všeč": [
+                    "Marija"
+                ],
+                "ni všeč": []
+            },
+            {
+                "ime_jedi": "hamburger",
+                "všeč": [],
+                "ni všeč": []
+            },
+            {
+                "ime_jedi": "pica",
+                "všeč": [],
+                "ni všeč": []
+            },
+            {
+                "ime_jedi": "pohančki",
+                "všeč": [],
+                "ni všeč": []
+            },
+            {
+                "ime_jedi": "tortilije",
+                "všeč": [],
+                "ni všeč": []
+            },
+            {
+                "ime_jedi": "makaroni z mletim mesom",
+                "všeč": [],
+                "ni všeč": []
+            }
+        ],
+        "jedilniki": [
+            [
+                "palačinke",
+                "šmorn",
+                "hamburger",
+                "pica",
+                "pohančki",
+                "tortilije",
+                "makaroni z mletim mesom"
+            ],
+            [
+                "postrvi na žaru",
+                "špinačna juha",
+                "palačinke",
+                "jajčka",
+                "šmorn",
+                "goveja juha",
+                "solata"
             ]
         ]
     }

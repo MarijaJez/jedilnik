@@ -1,5 +1,13 @@
 % rebase('tpl/base.tpl', title="Jedilnik")
 
+<div class="glava">
+    <a class="uporabnik" href="/osebna_stran"> {{ime}} </a>
+</div>
+
+<div class="glava-gospodinjstva">
+    <a class="gospodinjstvo"> {{ime_gospodinjstva}} </a>
+</div>
+
 <div class="na-sredini">
     <div class="zozano">
         <h1> Ustvarite nov jedilnik! </h1>
@@ -24,6 +32,5 @@
         </form>
     </div>
 </div>
-<a href="/stran_gospodinjstva/{{ime_gospodinjstva}}"> Nazaj na stran gospodinjstva. </a>
 
 %end
